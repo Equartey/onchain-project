@@ -14,13 +14,12 @@ const nextConfig = {
     }
     return config;
   },
-  server: {
+  experimental: {
     https: {
       key: fs.readFileSync(path.join(__dirname, 'certificates/localhost.key')),
       cert: fs.readFileSync(path.join(__dirname, 'certificates/localhost.crt')),
     },
   },
-  allowedDevOrigins: ['https://10.218.124.179:3000'],
 };
 
 module.exports = nextConfig; 
