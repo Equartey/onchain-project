@@ -14,9 +14,19 @@ import {
   Identity,
   EthBalance,
 } from '@coinbase/onchainkit/identity';
+import { useState } from 'react';
 import ArrowSvg from './svg/ArrowSvg';
 import ImageSvg from './svg/Image';
 import OnchainkitSvg from './svg/OnchainKit';
+import { fetchTopGainers } from './topMover';
+
+interface Token {
+  name: string;
+  symbol: string;
+  marketCapDelta24h: string;
+  marketCap: string;
+  volume24h: string;
+}
 
 const components = [
   {
@@ -36,6 +46,22 @@ const templates = [
 ];
 
 export default function App() {
+  const [topMovers, setTopMovers] = useState<Token[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleFetchTopMovers = async () => {
+    try {
+      setLoading(true);
+      const response = await fetchTopGainers();
+      const tokens = response.data?.exploreList?.edges?.map(edge => edge.node) || [];
+      setTopMovers(tokens);
+    } catch (error) {
+      console.error('Error fetching top movers:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen font-sans dark:bg-background dark:text-white bg-white text-black">
       <header className="pt-4 pr-4">
@@ -78,6 +104,37 @@ export default function App() {
               <OnchainkitSvg className="dark:text-white text-black" />
             </a>
           </div>
+foooo
+
+          <div className="text-center mb-8">
+            <button
+              onClick={handleFetchTopMovers}
+              disabled={loading}
+              className="px-4 py-2 bg-blue-500 text-black rounded hover:bg-blue-600 disabled:bg-blue-300"
+            >
+              {loading ? 'Loading...' : 'Fetch Top Movers'}
+            </button>
+
+            {topMovers.length > 0 && (
+              <div className="mt-4 max-h-60 overflow-y-auto">
+                <h3 className="text-xl font-bold mb-2">Top Movers</h3>
+                <div className="grid grid-cols-1 gap-2">
+                  {topMovers.map((token, index) => (
+                    <div
+                      key={index}
+                      className="p-3 rounded border dark:border-gray-700 border-gray-200"
+                    >
+                      <div className="font-semibold">{token.name} ({token.symbol})</div>
+                      <div className="text-sm">
+                        24h Change: {parseFloat(token.marketCapDelta24h).toFixed(2)}%
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           <p className="text-center mb-6">
             Get started by editing
             <code className="p-1 ml-1 rounded dark:bg-gray-800 bg-gray-200">app/page.tsx</code>.

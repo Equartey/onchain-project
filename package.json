@@ -11,13 +11,14 @@
   "dependencies": {
     "@coinbase/onchainkit": "latest",
     "@tanstack/react-query": "^5",
+    "@zoralabs/coins-sdk": "^0.1.0",
     "autoprefixer": "^10.4.21",
     "crypto-browserify": "^3.12.1",
     "next": "15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "stream-browserify": "^3.0.0",
-    "viem": "^2.27.2",
+    "viem": "^2.28.1",
     "wagmi": "^2.14.11"
   },
   "devDependencies": {
