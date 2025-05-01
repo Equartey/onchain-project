@@ -1,7 +1,7 @@
 import { IconButton, Tooltip, CircularProgress } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import useTopVolume from "../hooks/useTopVolume";
-import TopMoverRow from "./TopMoverRow";
+import TopVolumeRow from "./TopVolumeRow";  // Fix the import path
 import GenericHomeList from "./GenericHomeList";
 
 export default function TopVolume() {
@@ -16,8 +16,8 @@ export default function TopVolume() {
       hasData={!!coins.length}
     >
       {coins.map((coin) => (
-        <TopMoverRow key={coin.id} coin={coin} disabled={loading} />
-      ))}
+        <TopVolumeRow key={coin.id} coin={coin} disabled={loading} />
+))}
     </GenericHomeList>
   );
 }
