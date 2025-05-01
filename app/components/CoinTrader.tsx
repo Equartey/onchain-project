@@ -28,20 +28,20 @@ export default function CoinTrader({ coinAddress }: CoinTraderProps) {
         {/* Tabs */}
         <div className="flex border-b border-gray-200 dark:border-gray-700">
           <button
-            className={`flex-1 py-4 px-6 text-center font-medium ${
+            className={`flex-1 py-4 px-6 text-center font-medium text-black dark:text-white ${
               activeTab === 'buy'
-                ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400'
-                : 'text-black dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400'
+                ? 'border-b-2 border-black dark:border-white'
+                : 'hover:border-b-2 hover:border-black dark:hover:border-white'
             }`}
             onClick={() => setActiveTab('buy')}
           >
             Buy Coins
           </button>
           <button
-            className={`flex-1 py-4 px-6 text-center font-medium ${
+            className={`flex-1 py-4 px-6 text-center font-medium text-black dark:text-white ${
               activeTab === 'sell'
-                ? 'text-red-600 dark:text-red-400 border-b-2 border-red-600 dark:border-red-400'
-                : 'text-black dark:text-white hover:text-red-600 dark:hover:text-red-400'
+                ? 'border-b-2 border-black dark:border-white'
+                : 'hover:border-b-2 hover:border-black dark:hover:border-white'
             }`}
             onClick={() => setActiveTab('sell')}
           >
@@ -50,7 +50,7 @@ export default function CoinTrader({ coinAddress }: CoinTraderProps) {
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-6">
           {activeTab === 'buy' ? (
             <BuyCoin coinAddress={coinAddress} />
           ) : (
