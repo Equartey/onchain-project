@@ -2,6 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import {
+  ConnectWallet,
+  Wallet,
+  WalletDropdown,
+  WalletDropdownLink,
+  WalletDropdownDisconnect,
+} from '@coinbase/onchainkit/wallet';
+import { Avatar, Name } from '@coinbase/onchainkit/identity';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -14,11 +22,13 @@ export default function Navigation() {
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-xl font-bold">Coin Trading App</div>
         
-        <div className="flex space-x-6">
+        <div className="flex items-center space-x-8">
           <Link 
             href="/" 
-            className={`hover:text-indigo-300 transition ${
-              pathname === '/' ? 'text-indigo-400' : ''
+            className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+              pathname === '/' 
+                ? 'bg-indigo-600 text-white hover:bg-indigo-500' 
+                : 'hover:bg-indigo-600'
             }`}
           >
             Home
@@ -26,14 +36,36 @@ export default function Navigation() {
           
           <Link 
             href={`/coin/${exampleCoinAddress}`}
-            className={`hover:text-indigo-300 transition ${
-              pathname.startsWith('/coin/') ? 'text-indigo-400' : ''
+            className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+              pathname.startsWith('/coin/') 
+                ? 'bg-indigo-600 text-white hover:bg-indigo-500' 
+                : 'hover:bg-indigo-600'
             }`}
           >
             Trade Coins
           </Link>
+
+          <div className="ml-4">
+            <Wallet>
+              <ConnectWallet>
+                <Avatar className="h-8 w-8" />
+                <Name />
+              </ConnectWallet>
+              <WalletDropdown>
+                <WalletDropdownLink
+                  icon="wallet"
+                  href="https://keys.coinbase.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Wallet
+                </WalletDropdownLink>
+                <WalletDropdownDisconnect />
+              </WalletDropdown>
+            </Wallet>
+          </div>
         </div>
       </div>
     </nav>
   );
-} 
+}

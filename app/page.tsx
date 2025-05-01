@@ -29,7 +29,6 @@ const templates = [
 export default function App() {
   return (
     <div className="flex flex-col min-h-screen font-sans bg-white text-black">
-      <AppHeader />
       <main className="flex-grow flex justify-center">
         <div className="max-w-4xl w-full p-4">
           <div className="flex justify-between space-x-4 mb-8">
