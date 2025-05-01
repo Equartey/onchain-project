@@ -86,25 +86,25 @@ export default function CoinInfo({ coinAddress, userAddress }: CoinInfoProps) {
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4 text-black dark:text-gray-50">
-        {zoraData.name} ({zoraData.symbol})
+        {zoraData.name}
       </h2>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="border-r border-gray-200 dark:border-gray-700 pr-4">
-          <h3 className="text-sm font-medium text-black dark:text-gray-50">
-            Total Supply
-          </h3>
-          <p className="text-lg font-semibold text-black dark:text-gray-50">
-            {zoraData.totalSupply} {zoraData.symbol}
-          </p>
-        </div>
-
         <div>
           <h3 className="text-sm font-medium text-black dark:text-gray-50">
             Your Balance
           </h3>
           <p className="text-lg font-semibold text-black dark:text-gray-50">
             {userBalance} {zoraData.symbol}
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-medium text-black dark:text-gray-50">
+            Market Cap
+          </h3>
+          <p className="text-lg font-semibold text-black dark:text-gray-50">
+            {zoraData.marketCap ? `$${zoraData.marketCap}` : "N/A"}
           </p>
         </div>
 
@@ -122,10 +122,10 @@ export default function CoinInfo({ coinAddress, userAddress }: CoinInfoProps) {
         <div className="col-span-2 mt-4 grid grid-cols-2 gap-4">
           <div>
             <h3 className="text-sm font-medium text-black dark:text-gray-50">
-              Market Cap
+              Contract Address
             </h3>
-            <p className="text-sm text-black dark:text-gray-300 font-bold">
-              {zoraData.marketCap || "N/A"}
+            <p className="text-sm text-black dark:text-gray-300 font-bold overflow-hidden text-ellipsis">
+              {coinAddress}
             </p>
           </div>
           <div>
@@ -133,17 +133,17 @@ export default function CoinInfo({ coinAddress, userAddress }: CoinInfoProps) {
               24h Volume
             </h3>
             <p className="text-sm text-black dark:text-gray-300 font-bold">
-              {zoraData.volume24h || "N/A"}
+              {zoraData.volume24h ? `$${zoraData.volume24h}` : "N/A"}
             </p>
           </div>
         </div>
 
         {zoraData.mediaContent?.previewImage?.medium && (
-          <div className="col-span-2 mt-4">
+          <div className="col-span-2 mt-4 flex justify-center">
             <img
               src={zoraData.mediaContent.previewImage.medium}
               alt={`${zoraData.name} preview`}
-              className="rounded-lg w-full h-auto"
+              className="rounded-lg w-1/2 h-auto"
             />
           </div>
         )}
