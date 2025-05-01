@@ -15,7 +15,7 @@ export default function Navigation() {
   const pathname = usePathname();
   
   // Sample coin address - in a real app, you might use a default or popular coin
-  const exampleCoinAddress = '0x5f8a8211e57d030dfa5062e8c5b696765ab5b34e';
+  const exampleCoinAddress = '0x0acd5006a4ee321be73bbe7a033cec236c9a62db';
 
   return (
     <nav className="bg-gray-900 text-white p-4">

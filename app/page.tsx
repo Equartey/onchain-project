@@ -1,11 +1,7 @@
 "use client";
-
-import AppHeader from "@/src/components/AppHeader";
 import TopMovers from "@/src/components/TopMovers";
 import TopVolume from "@/src/components/TopVolume";
 import MostValuable from "@/src/components/MostValuable"; // Add this import
-
-// ...existing imports...
 
 export default function App() {
   return (

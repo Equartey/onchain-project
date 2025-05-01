@@ -1,109 +1,54 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { usePublicClient } from 'wagmi';
 import { formatEther, Address } from 'viem';
-
-// Mock ABI for basic ERC20 functions
-const erc20ABI = [
-  {
-    inputs: [],
-    name: 'name',
-    outputs: [{ internalType: 'string', name: '', type: 'string' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'symbol',
-    outputs: [{ internalType: 'string', name: '', type: 'string' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'totalSupply',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-] as const;
+import { useCoinDetails } from '../../src/hooks/useCoinDetails';
+import { useEffect, useState } from 'react';
 
 interface CoinInfoProps {
   coinAddress: Address;
   userAddress?: Address;
 }
 
-interface CoinData {
-  name: string;
-  symbol: string;
-  totalSupply: string;
-  userBalance: string;
-}
-
 export default function CoinInfo({ coinAddress, userAddress }: CoinInfoProps) {
-  const [coinData, setCoinData] = useState<CoinData | null>(null);
+  const { coinData: zoraData, isLoading: zoraLoading, error: zoraError } = useCoinDetails(coinAddress);
+  const [userBalance, setUserBalance] = useState<string>('0');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
   const publicClient = usePublicClient();
 
   useEffect(() => {
-    const fetchCoinData = async () => {
-      if (!coinAddress || !publicClient) return;
+    const fetchUserBalance = async () => {
+      if (!userAddress || !publicClient || !coinAddress) return;
       
       try {
-        setLoading(true);
-        
-        const [name, symbol, totalSupply, userBalance] = await Promise.all([
-          publicClient.readContract({
-            address: coinAddress,
-            abi: erc20ABI,
-            functionName: 'name',
-          }),
-          publicClient.readContract({
-            address: coinAddress,
-            abi: erc20ABI,
-            functionName: 'symbol',
-          }),
-          publicClient.readContract({
-            address: coinAddress,
-            abi: erc20ABI,
-            functionName: 'totalSupply',
-          }),
-          userAddress ? publicClient.readContract({
-            address: coinAddress,
-            abi: erc20ABI,
-            functionName: 'balanceOf',
-            args: [userAddress],
-          }) : BigInt(0),
-        ]);
-
-        setCoinData({
-          name: name as string,
-          symbol: symbol as string,
-          totalSupply: formatEther(totalSupply as bigint),
-          userBalance: formatEther(userBalance as bigint),
+        const balance = await publicClient.readContract({
+          address: coinAddress,
+          abi: [{
+            inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
+            name: 'balanceOf',
+            outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+            stateMutability: 'view',
+            type: 'function',
+          }],
+          functionName: 'balanceOf',
+          args: [userAddress],
         });
+
+        setUserBalance(formatEther(balance as bigint));
       } catch (err) {
-        console.error('Error fetching coin data:', err);
-        setError('Failed to load coin data');
+        console.error('Error fetching user balance:', err);
+        setError('Failed to load balance');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCoinData();
+    fetchUserBalance();
   }, [coinAddress, userAddress, publicClient]);
 
-  if (loading) {
+  if (zoraLoading || loading) {
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-pulse">
         <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
@@ -114,11 +59,21 @@ export default function CoinInfo({ coinAddress, userAddress }: CoinInfoProps) {
     );
   }
 
-  if (error) {
+  if (zoraError || error) {
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         <div className="text-red-500">
-          {error}
+          {zoraError?.message || error}
+        </div>
+      </div>
+    );
+  }
+
+  if (!zoraData) {
+    return (
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <div className="text-red-500">
+          No coin data found
         </div>
       </div>
     );
@@ -126,24 +81,58 @@ export default function CoinInfo({ coinAddress, userAddress }: CoinInfoProps) {
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-black dark:text-white">
-        {coinData?.name} ({coinData?.symbol})
+      <h2 className="text-2xl font-bold mb-4 text-black dark:text-gray-50">
+        {zoraData.name} ({zoraData.symbol})
       </h2>
       
       <div className="grid grid-cols-2 gap-4">
         <div className="border-r border-gray-200 dark:border-gray-700 pr-4">
-          <h3 className="text-sm text-black dark:text-white">Total Supply</h3>
-          <p className="text-lg font-semibold text-black dark:text-white">
-            {coinData?.totalSupply} {coinData?.symbol}
+          <h3 className="text-sm font-medium text-black dark:text-gray-50">Total Supply</h3>
+          <p className="text-lg font-semibold text-black dark:text-gray-50">
+            {zoraData.totalSupply} {zoraData.symbol}
           </p>
         </div>
         
         <div>
-          <h3 className="text-sm text-black dark:text-white">Your Balance</h3>
-          <p className="text-lg font-semibold text-black dark:text-white">
-            {coinData?.userBalance} {coinData?.symbol}
+          <h3 className="text-sm font-medium text-black dark:text-gray-50">Your Balance</h3>
+          <p className="text-lg font-semibold text-black dark:text-gray-50">
+            {userBalance} {zoraData.symbol}
           </p>
         </div>
+
+        {zoraData.description && (
+          <div className="col-span-2 mt-4">
+            <h3 className="text-sm font-medium text-black dark:text-gray-50">Description</h3>
+            <p className="text-sm text-black dark:text-gray-300 font-bold">
+              {zoraData.description}
+            </p>
+          </div>
+        )}
+
+        <div className="col-span-2 mt-4 grid grid-cols-2 gap-4">
+          <div>
+            <h3 className="text-sm font-medium text-black dark:text-gray-50">Market Cap</h3>
+            <p className="text-sm text-black dark:text-gray-300 font-bold">
+              {zoraData.marketCap || 'N/A'}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-black dark:text-gray-50">24h Volume</h3>
+            <p className="text-sm text-black dark:text-gray-300 font-bold">
+              {zoraData.volume24h || 'N/A'}
+            </p>
+          </div>
+        </div>
+
+        {zoraData.mediaContent?.previewImage?.medium && (
+          <div className="col-span-2 mt-4">
+            <img 
+              src={zoraData.mediaContent.previewImage.medium} 
+              alt={`${zoraData.name} preview`}
+              className="rounded-lg w-full h-auto"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
