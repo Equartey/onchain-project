@@ -35,7 +35,7 @@ export default function CoinOfTheDayBanner() {
           <div className="text-xs uppercase tracking-wider text-[#ff8c00] font-bold mb-2">
             COIN OF THE DAY
           </div>
-          <h2 className="text-2xl font-bold text-white mb-1">
+          <h2 className="text-2xl font-bold text-white mb-2">
             {coinOfDay.name} ({coinOfDay.symbol.toUpperCase()})
           </h2>
           <div className="flex space-x-4 text-sm gap-2">
@@ -51,8 +51,9 @@ export default function CoinOfTheDayBanner() {
           </div>
         </div>
         <Link
+          underline="none"
           onClick={handleViewDetails}
-          className={`px-4 py-3 rounded-lg transition-colors duration-200 bg-[#ff8c00] text-[#0a0a0a] hover:bg-[#ff9c20] font-bold no-underline`}
+          className={`px-4 py-3 rounded-lg transition-colors duration-200 bg-[#ff8c00] text-[#0a0a0a] hover:bg-[#ff9c20] font-bold`}
         >
           <span className="text-[#0a0a0a] font-bold">Trade Now</span>
         </Link>
