@@ -1,54 +1,23 @@
-import { Box, CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { IconButton, Tooltip, CircularProgress } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import useTopVolume from "../hooks/useTopVolume";
-import TopVolumeRow from "./TopVolumeRow";
+import TopMoverRow from "./TopMoverRow";
+import GenericHomeList from "./GenericHomeList";
 
 export default function TopVolume() {
   const { coins, loading, error, refetch } = useTopVolume();
 
-  if (error) return <div>Error: {error.message}</div>;
-
   return (
-    <div className="text-center mb-8">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-bold mb-2 items-center flex gap-2">
-          <span>Top Volume</span>
-          {loading && <CircularProgress size={20} />}
-        </h3>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Tooltip title="Refresh data">
-            <IconButton
-              onClick={() => refetch()}
-              disabled={loading}
-              size="small"
-              color="primary"
-            >
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </div>
-      {!coins.length && loading && (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-          <CircularProgress />
-        </Box>
-      )}
-      {!coins.length && !loading && (
-        <div className="mt-4 max-h-60 overflow-y-auto">
-          <div className="grid grid-cols-1 gap-2">
-            <div className="text-center text-gray-500">No data</div>
-          </div>
-        </div>
-      )}
-      {!!coins.length && (
-        <div className="mt-4 max-h-60 overflow-y-auto">
-          <div className="grid grid-cols-1 gap-2">
-            {coins.map((token, index) => (
-              <TopVolumeRow key={index} coin={token} disabled={loading} />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+    <GenericHomeList
+      title="TOP VOLUME"
+      loading={loading}
+      error={error}
+      refetch={refetch}
+      hasData={!!coins.length}
+    >
+      {coins.map((coin) => (
+        <TopMoverRow key={coin.id} coin={coin} disabled={loading} />
+      ))}
+    </GenericHomeList>
   );
 }
