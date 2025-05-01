@@ -1,4 +1,6 @@
 import { getCoinsTopGainers } from "@zoralabs/coins-sdk";
+import { useEffect } from "react";
+import { useState } from "react";
 
 interface Token {
   name: string;
@@ -19,17 +21,40 @@ interface TopGainersResponse {
   };
 }
 
-export async function fetchTopGainers(): Promise<TopGainersResponse> {
+export default function useTopMovers() {
+  const [coins, setCoins] = useState<Token[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchCoins = async () => {
+    try {
+      const response = await fetchTopGainers();
+      setCoins(response.data?.exploreList?.edges?.map((edge) => edge.node) || []);
+      setLoading(false);
+    } catch (error) {
+      setError(error as Error);
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchCoins();
+  }, []);
+
+  return { coins, loading, error, refetch: fetchCoins };
+}
+  
+async function fetchTopGainers(): Promise<TopGainersResponse> {
   const response = await getCoinsTopGainers({
     count: 10,        // Optional: number of coins per page
     after: undefined, // Optional: for pagination
   });
 
-  const tokens = response.data?.exploreList?.edges?.map((edge) => edge.node);
+  const tokens = response.data?.exploreList?.edges?.map((edge: { node: Token }) => edge.node);
   
   console.log(`Top Gainers (${tokens?.length || 0} coins):`);
   
-  tokens?.forEach((coin, index) => {
+  tokens?.forEach((coin: Token, index: number) => {
     const percentChange = coin.marketCapDelta24h 
       ? `${parseFloat(coin.marketCapDelta24h).toFixed(2)}%` 
       : "N/A";
