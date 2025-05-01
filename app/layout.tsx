@@ -2,6 +2,7 @@ import '@coinbase/onchainkit/styles.css';
 import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from './providers';
+import Navigation from './components/Navigation';
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME,
@@ -16,7 +17,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-background dark">
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navigation />
+          <main className="pt-4">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );
