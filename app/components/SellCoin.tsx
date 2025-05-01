@@ -76,7 +76,7 @@ export default function SellCoin({ coinAddress }: SellCoinProps) {
         Sell Coins
       </h2>
       
-      <div className="mb-4">
+      <div className="mb-5">
         <label 
           htmlFor="sell-amount" 
           className="block text-sm font-medium text-black dark:text-white mb-2"
@@ -92,7 +92,7 @@ export default function SellCoin({ coinAddress }: SellCoinProps) {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             disabled={isLoading}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm text-black dark:text-white placeholder-black focus:outline-none focus:ring-black focus:border-black text-base bg-white dark:bg-gray-800"
           />
         </div>
       </div>
@@ -100,13 +100,13 @@ export default function SellCoin({ coinAddress }: SellCoinProps) {
       <button
         onClick={handleSell}
         disabled={isLoading || !address}
-        className={`w-full px-4 py-2 rounded-md shadow-sm text-white font-medium ${
+        className={`w-full py-3 px-4 text-lg rounded-md shadow-sm font-bold ${
           isLoading || !address
-            ? 'bg-gray-400 cursor-not-allowed' 
-            : 'bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+            ? 'bg-gray-400 text-white cursor-not-allowed' 
+            : 'bg-black text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black dark:bg-white dark:text-black dark:hover:bg-gray-100'
         }`}
       >
-        {isLoading ? 'Processing...' : 'Sell Coins'}
+        {isLoading ? 'Processing...' : 'SELL COINS'}
       </button>
       
       {error && (
