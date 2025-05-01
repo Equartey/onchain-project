@@ -1,10 +1,10 @@
-import { GetCoinResponse, getCoinsTopVolume24h } from "@zoralabs/coins-sdk";
+import { GetCoinResponse, getCoinsMostValuable } from "@zoralabs/coins-sdk";
 import { useEffect } from "react";
 import { useState } from "react";
 
 export type Token = NonNullable<GetCoinResponse["zora20Token"]>;
 
-export default function useTopVolume() {
+export default function useMostValuable() {
   const [coins, setCoins] = useState<Token[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -12,7 +12,7 @@ export default function useTopVolume() {
   const fetchCoins = async () => {
     try {
       setLoading(true);
-      const response = await getCoinsTopVolume24h({
+      const response = await getCoinsMostValuable({
         count: 10, // Optional: number of coins per page
         after: undefined, // Optional: for pagination
       });
