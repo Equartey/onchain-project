@@ -15,12 +15,7 @@ import { Avatar, Name } from "@coinbase/onchainkit/identity";
 const exampleCoinAddress = "0x5f8a8211e57d030dfa5062e8c5b696765ab5b34e";
 
 const navigationItems = [
-  { href: "/", label: "Home", isActive: (path: string) => path === "/" },
-  {
-    href: `/coin/${exampleCoinAddress}`,
-    label: "Trade Coins",
-    isActive: (path: string) => path.startsWith("/coin/"),
-  },
+  { href: "/", label: "Home", isActive: (path: string) => path === "/" }
 ];
 
 export default function Navigation() {
