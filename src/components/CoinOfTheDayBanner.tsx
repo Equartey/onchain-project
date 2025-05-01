@@ -1,22 +1,14 @@
-import { useEffect, useState } from "react";
-import useTopVolume from "../hooks/useTopVolume"; // Changed from useTopMovers
 import { formatNumber } from "@/src/utils/format";
-import { CircularProgress, Button } from "@mui/material";
+import { CircularProgress, Button, Link } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { Token } from "../hooks/useTopVolume"; // Changed from useTopMovers
+import useTopMovers from "../hooks/useTopMovers";
 
 export default function CoinOfTheDayBanner() {
-  const { coins, loading, error } = useTopVolume(); // Changed from useTopMovers
-  const [coinOfDay, setCoinOfDay] = useState<Token | null>(null);
+  const { coins, loading, error } = useTopMovers();
   const router = useRouter();
 
-  useEffect(() => {
-    if (coins && coins.length > 0) {
-      // Select a random coin from top volume
-      const randomIndex = Math.floor(Math.random() * Math.min(10, coins.length));
-      setCoinOfDay(coins[randomIndex]);
-    }
-  }, [coins]);
+  const randomIndex = Math.floor(Math.random() * Math.min(10, coins.length));
+  const coinOfDay = coins[randomIndex];
 
   const handleViewDetails = () => {
     if (coinOfDay) {
@@ -43,33 +35,28 @@ export default function CoinOfTheDayBanner() {
           <div className="text-xs uppercase tracking-wider text-[#ff8c00] font-bold mb-2">
             COIN OF THE DAY
           </div>
-          <h2 className="text-2xl font-bold text-white mb-1">
+          <h2 className="text-2xl font-bold text-white mb-2">
             {coinOfDay.name} ({coinOfDay.symbol.toUpperCase()})
           </h2>
-          <div className="flex space-x-4 text-sm">
-            <div className="text-[#00ff00]">
-              24h Change: {formatNumber(coinOfDay.marketCapDelta24h || "0")}%
+          <div className="flex space-x-4 text-sm gap-2">
+            <div className="text-[#00ff00] p-2 rounded-lg bg-[#111111]">
+              24h Change: {formatNumber(coinOfDay.marketCapDelta24h) || "0"}%
             </div>
-            <div className="text-gray-300">
+            <div className="text-gray-300 p-2 rounded-lg bg-[#111111]">
               Market Cap: ${formatNumber(coinOfDay.marketCap)}
             </div>
-            <div className="text-gray-300">
-              Volume: ${formatNumber(coinOfDay.volume24h)}
+            <div className="text-gray-300 p-2 rounded-lg bg-[#111111]">
+              Volume: {formatNumber(coinOfDay.volume24h)}
             </div>
           </div>
         </div>
-        
-        <Button
+        <Link
+          underline="none"
           onClick={handleViewDetails}
-          variant="contained"
-          sx={{
-            backgroundColor: "#ff8c00",
-            "&:hover": { backgroundColor: "#ff9c20" },
-            fontWeight: "bold",
-          }}
+          className={`px-4 py-3 rounded-lg transition-colors duration-200 bg-[#ff8c00] text-[#0a0a0a] hover:bg-[#ff9c20] font-bold`}
         >
-          Trade Now
-        </Button>
+          <span className="text-[#0a0a0a] font-bold">Trade Now</span>
+        </Link>
       </div>
     </div>
   );
