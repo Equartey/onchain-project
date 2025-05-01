@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
-import useTopMovers from "../hooks/useTopMovers";
+import useTopVolume from "../hooks/useTopVolume"; // Changed from useTopMovers
 import { formatNumber } from "@/src/utils/format";
 import { CircularProgress, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { Token } from "../hooks/useTopMovers";
+import { Token } from "../hooks/useTopVolume"; // Changed from useTopMovers
 
 export default function CoinOfTheDayBanner() {
-  const { coins, loading, error } = useTopMovers();
+  const { coins, loading, error } = useTopVolume(); // Changed from useTopMovers
   const [coinOfDay, setCoinOfDay] = useState<Token | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (coins && coins.length > 2) {
-      // Get the 3rd coin (index 2)
-      setCoinOfDay(coins[2]);
+    if (coins && coins.length > 0) {
+      // Select a random coin from top volume
+      const randomIndex = Math.floor(Math.random() * Math.min(10, coins.length));
+      setCoinOfDay(coins[randomIndex]);
     }
   }, [coins]);
 
@@ -47,7 +48,7 @@ export default function CoinOfTheDayBanner() {
           </h2>
           <div className="flex space-x-4 text-sm">
             <div className="text-[#00ff00]">
-              24h Change: {formatNumber(coinOfDay.marketCapDelta24h)}%
+              24h Change: {formatNumber(coinOfDay.marketCapDelta24h || "0")}%
             </div>
             <div className="text-gray-300">
               Market Cap: ${formatNumber(coinOfDay.marketCap)}
